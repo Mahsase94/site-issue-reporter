@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Send, Plus, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Send, Plus, ChevronRight, MapPin, AlertTriangle } from "lucide-react";
 import { JobHeader } from "./JobHeader";
 import { StepProgress } from "./StepProgress";
 import { ProblemTypeCard } from "./ProblemTypeCard";
@@ -48,17 +48,17 @@ export function IssueReportApp() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col overflow-x-hidden">
       <JobHeader expertAvailableUntil={EXPERT_UNTIL} />
       {step !== "job" && step !== "sent" && <StepProgress current={step} />}
 
       <main className="flex-1 overflow-auto">
-        <div className="max-w-6xl mx-auto p-8">
+        <div className="max-w-6xl mx-auto p-4 md:p-8">
           {step === "job" && <JobScreen draft={draft} onStart={() => setStep("type")} />}
 
           {step === "type" && (
             <Section title="What kind of problem?" subtitle="Pick one. You can add more detail next.">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(["missing-wall", "measurement-off", "mismatch", "other"] as ProblemType[]).map((t) => (
                   <ProblemTypeCard key={t} type={t} selected={draft.problemType === t} onSelect={(v) => update({ problemType: v })} />
                 ))}
@@ -67,35 +67,53 @@ export function IssueReportApp() {
           )}
 
           {step === "location" && (
-            <Section title="Where is the issue?" subtitle="Tap the room on the plan where the problem is.">
+            <Section title="Where is the issue?" subtitle="Tap the room on the 2023 plan where the problem is. Help someone unfamiliar with the space find it fast.">
               <FloorPlanMock pin={draft.location} onPin={(p) => update({ location: p })} />
+              {draft.location && (
+                <div className="mt-4 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 flex items-start gap-3">
+                  <MapPin className="size-5 text-primary shrink-0 mt-0.5" />
+                  <div className="text-sm">
+                    <div className="font-semibold text-foreground">Pinned in {draft.location.room}</div>
+                    <div className="text-muted-foreground mt-0.5">South wall near hallway opening · compared against 2023 capture.</div>
+                  </div>
+                </div>
+              )}
             </Section>
           )}
 
           {step === "evidence" && (
-            <Section title="Add evidence" subtitle="Photo and a short note help the expert understand quickly. Type as little as you want.">
+            <Section title="Add evidence" subtitle="Photo, note, tags and measurement. Keep it fast — minimal typing.">
               <EvidencePanel draft={draft} update={update} />
             </Section>
           )}
 
           {step === "summary" && (
-            <Section title="Review the AI summary" subtitle="We drafted a report from your input. Edit anything that's wrong.">
+            <Section title="Review the AI report" subtitle="We structured your input into the fields Sabine needs. Edit anything that's wrong.">
               <AISummaryCard draft={draft} onChange={(s) => update({ summary: s })} />
             </Section>
           )}
 
           {step === "review" && (
             <Section title="Send to remote expert" subtitle="Confirm everything below. This is exactly what the expert receives.">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="rounded-xl border-2 border-destructive/30 bg-destructive/5 p-4 flex items-start gap-3 mb-6">
+                <AlertTriangle className="size-5 text-destructive shrink-0 mt-0.5" />
+                <div className="text-sm text-foreground">
+                  <span className="font-semibold">Time-sensitive:</span> expert available until 15:00 CET · contractor has 3 more jobs today · capture blocked until reviewed.
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <ReviewChecklist draft={draft} />
                 <div className="rounded-2xl border-2 border-border bg-surface p-6">
                   <div className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Urgency</div>
                   <div className="grid grid-cols-2 gap-3">
-                    {(["normal", "urgent"] as const).map((u) => (
+                    {(["urgent", "normal"] as const).map((u) => (
                       <button key={u} onClick={() => update({ urgency: u })}
                         className={`rounded-xl p-4 border-2 text-left ${draft.urgency === u ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}>
                         <div className="font-semibold capitalize">{u}</div>
-                        <div className="text-xs text-muted-foreground mt-1">{u === "urgent" ? "Blocks work on-site now" : "Reply within 24h"}</div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {u === "urgent" ? "Blocks current capture." : "Can wait for later review."}
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -112,7 +130,7 @@ export function IssueReportApp() {
       </main>
 
       {step !== "job" && step !== "sent" && (
-        <footer className="border-t border-border bg-surface px-8 py-4 flex items-center justify-between sticky bottom-0">
+        <footer className="border-t border-border bg-surface px-4 md:px-8 py-4 flex items-center justify-between gap-3 sticky bottom-0">
           <PrimaryButton variant="ghost" onClick={goBack}>
             <ArrowLeft className="size-5" /> Back
           </PrimaryButton>
@@ -134,29 +152,29 @@ export function IssueReportApp() {
 function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
   return (
     <div>
-      <h1 className="text-3xl font-bold text-foreground">{title}</h1>
-      {subtitle && <p className="text-muted-foreground mt-2 text-lg">{subtitle}</p>}
-      <div className="mt-8">{children}</div>
+      <h1 className="text-2xl md:text-3xl font-bold text-foreground">{title}</h1>
+      {subtitle && <p className="text-muted-foreground mt-2 text-base md:text-lg">{subtitle}</p>}
+      <div className="mt-6 md:mt-8">{children}</div>
     </div>
   );
 }
 
 function JobScreen({ draft: _d, onStart }: { draft: IssueDraft; onStart: () => void }) {
   return (
-    <div className="grid grid-cols-3 gap-6">
-      <div className="col-span-2 space-y-6">
-        <div className="rounded-2xl border border-border bg-surface p-8">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 space-y-6">
+        <div className="rounded-2xl border border-border bg-surface p-6 md:p-8">
           <div className="text-sm text-muted-foreground uppercase tracking-wider font-semibold">Job in progress</div>
-          <h1 className="text-3xl font-bold text-foreground mt-2">Bauer Residence · full renovation capture</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mt-2">Bauer Residence · full renovation capture</h1>
           <p className="text-muted-foreground mt-3">Return visit · previous capture on file from 2023. Permit approved last Tuesday. Homeowner budget ~40,000 EUR.</p>
-          <div className="grid grid-cols-3 gap-4 mt-6">
+          <div className="grid grid-cols-3 gap-3 md:gap-4 mt-6">
             <Stat label="Rooms captured" value="4 / 6" />
             <Stat label="Open issues" value="0" />
             <Stat label="Today's jobs" value="1 of 4" />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-surface p-8">
+        <div className="rounded-2xl border border-border bg-surface p-6 md:p-8">
           <h2 className="text-lg font-semibold text-foreground mb-4">Recent captures</h2>
           <ul className="divide-y divide-border">
             {["Living room", "Kitchen", "Bathroom", "Bedroom"].map((r) => (
@@ -173,7 +191,7 @@ function JobScreen({ draft: _d, onStart }: { draft: IssueDraft; onStart: () => v
         <div className="rounded-2xl border-2 border-primary bg-primary/5 p-6">
           <div className="text-sm font-semibold text-primary uppercase tracking-wider">Need help?</div>
           <h3 className="text-xl font-bold text-foreground mt-2">Something wrong on-site?</h3>
-          <p className="text-sm text-muted-foreground mt-2">Flag a missing wall, wrong measurement, or layout mismatch. A remote expert will review.</p>
+          <p className="text-sm text-muted-foreground mt-2">Flag a missing wall, wrong measurement, or layout mismatch. A remote expert will review async — no live call needed.</p>
           <div className="mt-5">
             <PrimaryButton onClick={onStart} className="w-full">
               <Plus className="size-5" /> New space issue
@@ -202,9 +220,9 @@ function JobScreen({ draft: _d, onStart }: { draft: IssueDraft; onStart: () => v
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-muted p-4">
+    <div className="rounded-xl bg-muted p-3 md:p-4">
       <div className="text-xs text-muted-foreground uppercase tracking-wider">{label}</div>
-      <div className="text-2xl font-bold text-foreground mt-1">{value}</div>
+      <div className="text-xl md:text-2xl font-bold text-foreground mt-1">{value}</div>
     </div>
   );
 }
