@@ -49,7 +49,7 @@ export const emptyDraft: IssueDraft = {
   location: null,
   photoAttached: true,
   note: "Existing wall between living room and hallway is present on site but missing from the 2023 plan. Electrical outlet visible on the wall. Need expert confirmation before continuing capture.",
-  tags: ["Affects electrical", "Homeowner change", "Safety concern"],
+  tags: ["Affects electrical", "Homeowner-requested change", "Safety concern"],
   measurement: "3.04 m wall length",
   summary: "",
   urgency: "urgent",
