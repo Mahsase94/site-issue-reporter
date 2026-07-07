@@ -11,7 +11,7 @@ const TAG_OPTIONS = [
   "Blocks door",
   "Affects plumbing",
   "Affects electrical",
-  "Homeowner change",
+  "Homeowner-requested change",
   "Safety concern",
 ];
 
