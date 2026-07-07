@@ -16,7 +16,7 @@ export function ExpertPreview({ draft }: { draft: IssueDraft }) {
     <div className="rounded-2xl border-2 border-dashed border-primary/40 bg-background p-4 md:p-5">
       <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wider">
         <Monitor className="size-4" aria-hidden />
-        Expert view · what Munich will see
+        Expert view · what the remote expert will see
       </div>
       <div className="bg-surface rounded-xl border border-border p-5 shadow-sm">
         <div className="flex items-start justify-between mb-4 pb-4 border-b border-border gap-3 flex-wrap">
