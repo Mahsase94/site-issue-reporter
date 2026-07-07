@@ -58,9 +58,8 @@ The complete prototype flow of a structured async issue report:
 
 - Sent: a simulated confirmation with clear “what happens next” steps.
 
-
-
 ## Scope
+
 
 This is a front-end prototype.
 
