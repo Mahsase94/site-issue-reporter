@@ -38,8 +38,8 @@ export function SentConfirmation({ onNew, onBack }: Props) {
         <div className="mt-6 inline-flex items-center gap-2 bg-muted rounded-full px-4 py-2 text-sm">
           <Clock className="size-4 text-muted-foreground" aria-hidden />
           <span>
-            Expected response within 20 minutes · expert available until{" "}
-            {mockExpert.availableUntil} {mockExpert.tz}
+            Expert notified · Available until {mockExpert.availableUntil}{" "}
+            {mockExpert.tz}
           </span>
         </div>
       </div>
