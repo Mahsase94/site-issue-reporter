@@ -29,8 +29,8 @@ export function EvidenceStep({ draft, update }: Props) {
       <div className="flex items-start gap-3 rounded-xl bg-accent/40 border border-accent p-4 text-sm text-accent-foreground">
         <Info className="size-4 mt-0.5 shrink-0" aria-hidden />
         <span>
-          Photo, note, tags and measurement together let Sabine resolve this
-          without a live call. Keep it short — tap what applies.
+          Add the context that applies so Sabine can review the issue without a
+          live call. Keep it short.
         </span>
       </div>
 
