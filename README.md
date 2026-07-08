@@ -36,9 +36,11 @@ http://localhost:8080
 
 Run:
 
+'''bash
 npm run build
 
 npm run preview
+'''
 
 ## Prototype flow
 
