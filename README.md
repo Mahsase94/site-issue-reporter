@@ -2,7 +2,7 @@
 
 A browser-based iPad prototype for magicplan field workers. The app allows a contractor on-site to report a space issue and send a structured async handoff to a remote expert without needing a live call.
 
-Built as a take-home design challenge for the Product Designer role at magicplan.
+Built as a take-home design challenge for the Product Designer role at magicplan. Live Link: https://expert-reach-app.lovable.app 
 
 ## Tech stack
 
@@ -36,11 +36,10 @@ http://localhost:8080
 
 Run:
 
-'''bash
+```bash
 npm run build
-
 npm run preview
-'''
+```
 
 ## Prototype flow
 
