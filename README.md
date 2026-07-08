@@ -22,9 +22,10 @@ Requirements:
 
 Clone or download the repository, then run:
 
+```bash
 npm install
-
 npm run dev
+```
 
 Open the local URL printed in the terminal.
 
